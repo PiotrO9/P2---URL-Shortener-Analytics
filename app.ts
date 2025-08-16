@@ -30,6 +30,14 @@ server.get<{ Reply: RootResponse }>('/', async (request: FastifyRequest, reply: 
 	};
 });
 
+server.get('/health', async (request: FastifyRequest, reply: FastifyReply) => {
+	return {
+		status: 'healthy',
+		timestamp: new Date().toISOString(),
+		uptime: process.uptime(),
+	};
+});
+
 async function start(): Promise<void> {
 	try {
 		await server.listen({
