@@ -4,39 +4,15 @@ export interface TestResponse {
 	status: string;
 }
 
-export interface HealthResponse {
-	status: string;
-	uptime: number;
-	timestamp: string;
-}
-
 export interface RootResponse {
 	message: string;
 	endpoints: {
 		test: string;
 		health: string;
+		createLink: string;
+		getLinkStats: string;
+		redirect: string;
 	};
-}
-
-export interface CreateUrlRequest {
-	originalUrl: string;
-	customAlias?: string;
-}
-
-export interface UrlResponse {
-	id: string;
-	originalUrl: string;
-	shortUrl: string;
-	alias: string;
-	createdAt: string;
-	clicks: number;
-}
-
-export interface ApiError {
-	error: string;
-	message: string;
-	statusCode: number;
-	timestamp: string;
 }
 
 export interface ServerConfig {
@@ -45,43 +21,33 @@ export interface ServerConfig {
 	logger: boolean;
 }
 
-export interface RequestContext {
-	userId?: string;
-	ip: string;
-	userAgent: string;
+export interface CreateUrlRequest {
+	originalUrl: string;
+	expiresAt?: string;
 }
 
-export interface ValidationError {
-	field: string;
-	message: string;
-	value?: any;
+export interface LinkResponse {
+	id: string;
+	slug: string;
+	shortUrl: string;
+	createdAt: Date;
+	expiresAt: Date | null;
 }
 
-export interface PaginationParams {
-	page: number;
-	limit: number;
+export interface LinkStatsResponse {
+	id: string;
+	slug: string;
+	url: string;
+	clicks: number;
+	createdAt: Date;
+	expiresAt: Date | null;
+	ownerId: string | null;
+	shortUrl: string;
 }
 
-export interface PaginatedResponse<T> {
-	data: T[];
-	pagination: {
-		page: number;
-		limit: number;
-		total: number;
-		totalPages: number;
-	};
-}
-
-export interface LogEntry {
-	level: 'info' | 'warn' | 'error' | 'debug';
-	message: string;
-	timestamp: string;
-	context?: Record<string, any>;
-}
-
-export interface ApiMetadata {
-	version: string;
-	environment: 'development' | 'staging' | 'production';
-	buildDate: string;
-	uptime: number;
+export interface ErrorResponse {
+	error: string;
+	type?: string;
+	message?: string;
+	status?: number;
 }

@@ -1,24 +1,25 @@
 FROM node:18-alpine
 
-# Dodaj OpenSSL
+# przydaje się do TLS/bcrypt; masz już openssl
 RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-# Kopiuj pliki konfiguracyjne
+# kopie deklaracji zależności i prisma
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY prisma ./prisma/
 
-# Zainstaluj zależności
+# instalacja prod+dev
 RUN npm ci
 
-# Wygeneruj Prisma Client
+# generuj Prisma Client (musi mieć schema)
 RUN npm run db:generate
 
-# Kopiuj kod źródłowy
+# reszta kodu
 COPY . .
 
 EXPOSE 3000
 
+# dev: ts-node-dev/nodemon (poniżej w package.json)
 CMD ["npm", "run", "dev"]

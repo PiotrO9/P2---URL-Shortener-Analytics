@@ -11,13 +11,12 @@ datasource db {
 }
 
 model Link {
-  id          String   @id @default(cuid())
-  originalUrl String   @map("original_url")
-  shortCode   String   @unique @map("short_code")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  clicks      Int      @default(0)
-  isActive    Boolean  @default(true) @map("is_active")
-
-  @@map("links")
+  id        String   @id @default(cuid())
+  slug      String   @unique @db.VarChar(32)
+  url       String   @db.Text
+  clicks    Int      @default(0)
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+  ownerId   String?  // jeśli chcesz multi-user (future)
+  @@index([createdAt, id(desc)])
 }

@@ -22,6 +22,19 @@ services:
    timeout: 5s
    retries: 5
 
+ redis:
+  image: redis:7-alpine
+  container_name: url_shortener_redis
+  ports:
+   - '6379:6379'
+  networks:
+   - url_shortener_network
+  healthcheck:
+   test: ['CMD', 'redis-cli', 'ping']
+   interval: 5s
+   timeout: 3s
+   retries: 10
+
  app:
   build: .
   container_name: url_shortener_app
@@ -31,8 +44,12 @@ services:
    NODE_ENV: ${NODE_ENV:-development}
    PORT: ${PORT:-3000}
    DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-url_shortener}?schema=public
+   REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+   PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:3000}
   depends_on:
    postgres:
+    condition: service_healthy
+   redis:
     condition: service_healthy
   networks:
    - url_shortener_network
