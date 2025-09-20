@@ -22,6 +22,7 @@ export class HealthController {
 				test: '/test - Test działania serwera',
 				health: '/health - Status serwera',
 				createLink: 'POST /api/links - Tworzenie nowego linku',
+				getAllLinks: 'GET /api/links - Pobieranie wszystkich linków z sortowaniem i limitowaniem',
 				getLinkStats: 'GET /api/links/:slug - Statystyki linku',
 				redirect: '/:slug - Przekierowanie do oryginalnego URL',
 			},

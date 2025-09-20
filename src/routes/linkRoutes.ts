@@ -9,6 +9,11 @@ export async function linkRoutes(fastify: FastifyInstance): Promise<void> {
 		handler: linkController.createLink.bind(linkController),
 	});
 
+	// Pobieranie wszystkich linków z możliwością sortowania i limitowania
+	fastify.get('/api/links', {
+		handler: linkController.getAllLinks.bind(linkController),
+	});
+
 	// Statystyki linku
 	fastify.get('/api/links/:slug', {
 		handler: linkController.getLinkStats.bind(linkController),

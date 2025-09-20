@@ -10,6 +10,7 @@ export interface RootResponse {
 		test: string;
 		health: string;
 		createLink: string;
+		getAllLinks: string;
 		getLinkStats: string;
 		redirect: string;
 	};
@@ -50,4 +51,21 @@ export interface ErrorResponse {
 	type?: string;
 	message?: string;
 	status?: number;
+}
+
+export type SortField = 'clicks' | 'createdAt' | 'expiresAt';
+export type SortOrder = 'asc' | 'desc';
+
+export interface GetLinksQuery {
+	limit?: number;
+	sortBy?: SortField;
+	order?: SortOrder;
+}
+
+export interface GetLinksResponse {
+	links: LinkStatsResponse[];
+	total: number;
+	limit: number;
+	sortBy: SortField;
+	order: SortOrder;
 }

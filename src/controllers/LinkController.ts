@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { LinkService } from '../services/LinkService';
-import { CreateUrlRequest } from '../../types';
+import { CreateUrlRequest, GetLinksQuery } from '../../types';
 
 export class LinkController {
 	private linkService: LinkService;
@@ -51,6 +51,24 @@ export class LinkController {
 
 			const stats = await this.linkService.getLinkStats(slug);
 			reply.send(stats);
+		} catch (error: any) {
+			this.handleError(error, reply);
+		}
+	}
+
+	async getAllLinks(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+		try {
+			const query = request.query as GetLinksQuery;
+
+			// Convert string parameters to appropriate types
+			const parsedQuery: GetLinksQuery = {
+				limit: query.limit ? parseInt(query.limit.toString(), 10) : undefined,
+				sortBy: query.sortBy,
+				order: query.order,
+			};
+
+			const result = await this.linkService.getAllLinks(parsedQuery);
+			reply.send(result);
 		} catch (error: any) {
 			this.handleError(error, reply);
 		}
