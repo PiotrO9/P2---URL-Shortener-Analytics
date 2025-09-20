@@ -17,6 +17,7 @@ model Link {
   clicks    Int      @default(0)
   createdAt DateTime @default(now())
   expiresAt DateTime?
+  isActive  Boolean  @default(true)
   ownerId   String?  // jeśli chcesz multi-user (future)
   @@index([createdAt, id(desc)])
 }

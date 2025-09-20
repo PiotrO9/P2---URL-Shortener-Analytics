@@ -19,6 +19,11 @@ export async function linkRoutes(fastify: FastifyInstance): Promise<void> {
 		handler: linkController.getLinkStats.bind(linkController),
 	});
 
+	// Dezaktywacja linku
+	fastify.patch('/api/links/:slug/deactivate', {
+		handler: linkController.deactivateLink.bind(linkController),
+	});
+
 	// Przekierowanie (musi być na końcu, żeby nie kolidowało z innymi routes)
 	fastify.get('/:slug', {
 		handler: linkController.redirectToUrl.bind(linkController),

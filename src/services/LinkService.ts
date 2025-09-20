@@ -46,6 +46,7 @@ export class LinkService {
 					shortUrl: `${process.env.PUBLIC_BASE_URL}/${link.slug}`,
 					createdAt: link.createdAt,
 					expiresAt: link.expiresAt,
+					isActive: link.isActive,
 				};
 			} catch (error: any) {
 				if (error.code !== 'P2002') {
@@ -78,6 +79,11 @@ export class LinkService {
 			throw new Error('Link not found');
 		}
 
+		// Sprawdź czy link jest aktywny
+		if (!link.isActive) {
+			throw new Error('Link has been deactivated');
+		}
+
 		// Sprawdź czy link nie wygasł
 		if (link.expiresAt && link.expiresAt < new Date()) {
 			throw new Error('Link has expired');
@@ -101,12 +107,23 @@ export class LinkService {
 				clicks: true,
 				createdAt: true,
 				expiresAt: true,
+				isActive: true,
 				ownerId: true,
 			},
 		});
 
 		if (!link) {
 			throw new Error('Link not found');
+		}
+
+		// Sprawdź czy link jest aktywny
+		if (!link.isActive) {
+			throw new Error('Link has been deactivated');
+		}
+
+		// Sprawdź czy link nie wygasł
+		if (link.expiresAt && link.expiresAt < new Date()) {
+			throw new Error('Link has expired');
 		}
 
 		return {
@@ -116,6 +133,7 @@ export class LinkService {
 			clicks: link.clicks,
 			createdAt: link.createdAt,
 			expiresAt: link.expiresAt,
+			isActive: link.isActive,
 			ownerId: link.ownerId,
 			shortUrl: `${process.env.PUBLIC_BASE_URL}/${link.slug}`,
 		};
@@ -126,6 +144,25 @@ export class LinkService {
 			where: { slug },
 			data: { clicks: { increment: 1 } },
 		});
+	}
+
+	async deactivateLink(slug: string): Promise<void> {
+		const link = await prisma.link.findUnique({
+			where: { slug },
+		});
+
+		if (!link) {
+			throw new Error('Link not found');
+		}
+
+		await prisma.link.update({
+			where: { slug },
+			data: { isActive: false },
+		});
+
+		// Usuń z cache Redis
+		const redisClient = await redis;
+		await redisClient.del(`s:${slug}`);
 	}
 
 	async getAllLinks(query: GetLinksQuery = {}): Promise<GetLinksResponse> {
@@ -153,6 +190,7 @@ export class LinkService {
 				clicks: true,
 				createdAt: true,
 				expiresAt: true,
+				isActive: true,
 				ownerId: true,
 			},
 		});
@@ -165,6 +203,7 @@ export class LinkService {
 			clicks: link.clicks,
 			createdAt: link.createdAt,
 			expiresAt: link.expiresAt,
+			isActive: link.isActive,
 			ownerId: link.ownerId,
 			shortUrl: `${process.env.PUBLIC_BASE_URL}/${link.slug}`,
 		}));

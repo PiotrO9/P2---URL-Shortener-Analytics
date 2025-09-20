@@ -74,6 +74,22 @@ export class LinkController {
 		}
 	}
 
+	async deactivateLink(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+		try {
+			const { slug } = request.params as { slug: string };
+
+			if (!slug) {
+				reply.status(400).send({ error: 'Slug is required' });
+				return;
+			}
+
+			await this.linkService.deactivateLink(slug);
+			reply.send({ message: 'Link deactivated successfully' });
+		} catch (error: any) {
+			this.handleError(error, reply);
+		}
+	}
+
 	private handleError(error: Error, reply: FastifyReply): void {
 		console.error('LinkController error:', error);
 
@@ -90,6 +106,15 @@ export class LinkController {
 			reply.status(422).send({
 				type: 'expired_url',
 				message: 'URL has expired',
+				status: 422,
+			});
+			return;
+		}
+
+		if (error.message === 'Link has been deactivated') {
+			reply.status(422).send({
+				type: 'deactivated_link',
+				message: 'Link has been deactivated',
 				status: 422,
 			});
 			return;
@@ -113,6 +138,11 @@ export class LinkController {
 
 		if (error.message === 'Link has expired') {
 			reply.status(410).send({ error: 'Link has expired' });
+			return;
+		}
+
+		if (error.message === 'Link has been deactivated') {
+			reply.status(410).send({ error: 'Link has been deactivated' });
 			return;
 		}
 

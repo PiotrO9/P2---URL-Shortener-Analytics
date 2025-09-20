@@ -1,0 +1,2 @@
+-- Empty migration file
+-- This migration was created to fix broken migration state

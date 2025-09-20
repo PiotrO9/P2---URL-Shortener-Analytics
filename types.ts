@@ -33,6 +33,7 @@ export interface LinkResponse {
 	shortUrl: string;
 	createdAt: Date;
 	expiresAt: Date | null;
+	isActive: boolean;
 }
 
 export interface LinkStatsResponse {
@@ -42,6 +43,7 @@ export interface LinkStatsResponse {
 	clicks: number;
 	createdAt: Date;
 	expiresAt: Date | null;
+	isActive: boolean;
 	ownerId: string | null;
 	shortUrl: string;
 }
