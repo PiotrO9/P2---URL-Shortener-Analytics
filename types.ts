@@ -12,6 +12,7 @@ export interface RootResponse {
 		createLink: string;
 		getAllLinks: string;
 		getLinkStats: string;
+		deactivateLink: string;
 		redirect: string;
 	};
 }

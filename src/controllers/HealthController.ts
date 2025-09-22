@@ -24,6 +24,7 @@ export class HealthController {
 				createLink: 'POST /api/links - Tworzenie nowego linku',
 				getAllLinks: 'GET /api/links - Pobieranie wszystkich linków z sortowaniem i limitowaniem',
 				getLinkStats: 'GET /api/links/:slug - Statystyki linku',
+				deactivateLink: 'PATCH /api/links/:slug/deactivate - Deaktywacja linku',
 				redirect: '/:slug - Przekierowanie do oryginalnego URL',
 			},
 		};
